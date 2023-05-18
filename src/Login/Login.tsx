@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import "./Login.css"; // Import the CSS file
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppStateContext } from "../App";
+import "./Login.css";
 
-interface User {
-  username: string;
-  password: string;
-}
+
 
 function validateUser(username: string, password: string): boolean {
   return username === "admin" && password === "password";
 }
 
 const Login: React.FC = () => {
+  const { setMyState } = useContext(AppStateContext);
+
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -22,10 +22,10 @@ const Login: React.FC = () => {
 
     if (validateUser(username, password)) {
       setMessage("Login successful!");
-      localStorage.setItem("authenticated", "72f4f34t4ytg44");
+      setMyState(true);
       setTimeout(function () {
         navigate("/dashboard");
-      }, 1000);
+      }, 500);
     } else {
       setMessage("Invalid username or password.");
     }
