@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import "./Dashboard.css"; // Import the CSS file for dashboard styles
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppStateContext } from "../App";
+import "./Dashboard.css";
 
 interface Task {
   name: string;
@@ -13,6 +14,8 @@ interface Subtask {
 }
 
 const Dashboard: React.FC = () => {
+  const { setMyState } = useContext(AppStateContext);
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [newTaskName, setNewTaskName] = useState<string>("");
@@ -27,7 +30,7 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const Logout = () => {
-    localStorage.clear();
+    setMyState(false);
     navigate("/");
   };
 
@@ -44,7 +47,7 @@ const Dashboard: React.FC = () => {
 
   const addSubtask = () => {
     if (newSubtaskName.trim() === "") {
-      return; // Ignore if subtask name is empty
+      return;
     }
 
     const newSubtask: Subtask = {
@@ -58,7 +61,7 @@ const Dashboard: React.FC = () => {
 
   const addTask = () => {
     if (newTaskName.trim() === "") {
-      return; // Ignore if task name is empty
+      return;
     }
 
     const newTask: Task = {
@@ -163,21 +166,6 @@ const Dashboard: React.FC = () => {
 
         <div className="div3">
           Incomplete tasks
-          {/* <div>
-            {tasks.map((task, index) => (
-              <div key={index}>
-                <h3>{task.name}</h3>
-                <ul>
-                  {task.subtasks.map(
-                    (subtask, subindex) =>
-                      !subtask.completed && (
-                        <li key={subindex}>{subtask.name}</li>
-                      )
-                  )}
-                </ul>
-              </div>
-            ))}
-          </div> */}
           <div className="IncompleteTasksWrapper">
             {tasks.map((task, index) => {
               const incompleteSubtasks = task.subtasks.filter(
@@ -185,7 +173,7 @@ const Dashboard: React.FC = () => {
               );
 
               if (incompleteSubtasks.length === 0) {
-                return null; // Skip rendering the task if all subtasks are completed
+                return null;
               }
 
               return (
